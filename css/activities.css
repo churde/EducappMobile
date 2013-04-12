@@ -1,0 +1,23 @@
+#activitiesContainer #update{
+    float: right;
+}
+
+.activityContainer{
+    margin-top: 20px;
+    /*border: 1px #006dcc solid;*/
+    background-color: #E7F3F3;
+    padding: 5px;
+}
+
+.activityContainer .name{
+    font-size: larger;
+    font-weight: bold;
+}
+
+.activityContainer .place{
+    /*font-size: larger;*/
+}
+
+.clear{
+    clear: both;
+}
