@@ -11,24 +11,40 @@ app.ui = {
         var buttonsContainer = $('<div class="buttonsContainer"></div>');
         
         if(_args.back){
-            buttonsContainer.append(this.createBackButton());
+            if(_args.backClick){
+                
+                con("creo boton con backclick " + _args.backClick)
+                buttonsContainer.append(this.createBackButton({click: _args.backClick}));
+            }
+            else{
+                buttonsContainer.append(this.createBackButton());
+            }
         }
         
         return buttonsContainer;
     },
     createButton: function(_args) {
-        var btn = $('<button class="btn-primary"></button>');
+        var btn = $('<button class="btn-primary btn-large"></button>');
         btn.text(_args.text);
         btn.click(_args.click);
 
         return btn;
     },
-    createBackButton: function() {
+    createBackButton: function(_args) {
 
 
-        var btn = this.createButton({text: 'Volver', click: function() {
+
+        var btn = this.createButton({text: 'Volver'});
+        if(_args && _args.click){
+            btn.click(function(){
+                _args.click();
+            });
+        }
+        else{
+            btn.click(function(){
                 app.navigation.back();
-            }});
+            });
+        }
 
         return btn;
     }

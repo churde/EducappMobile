@@ -86,15 +86,14 @@ app.activities = {
             container.append(place);
 
             var buttonsContainer = $('<div class="buttonsContainer"></div>');
-//            var btnMap = $('<button class="btnMap btn-info" \n\
-//onclick="app.map.show({latitude: ' + activity.latitude + ',longitude:' + activity.longitude + '});"></button>');
-//            btnMap.text('Ver Mapa');
-//
-//            if (activity.latitude != "" && activity.longitude != "") {
-//                buttonsContainer.append(btnMap);
-//            }
+//            var btnShow = app.ui.createButton({
+//                text: 'Mostrar',
+//                click: function(){
+//                    app.activities.showActivity(activity.__activityId)
+//                }
+//            })
 
-            var btnShow = $('<button class="btnShow btn-primary" onclick="app.activities.showActivity(' + activity.__activityId + ')"></button>');
+            var btnShow = $('<button class="btnShow btn-primary btn-large" onclick="app.activities.showActivity(' + activity.__activityId + ')"></button>');
             btnShow.text('Mostrar');
 
 
@@ -116,33 +115,57 @@ app.activities = {
         // Get activityData
         var activityData = this.activitiesData[id];
         var activityId = activityData.__activityId;
-        
+
+        var fieldsTitle = {
+            name: 'Nombre',
+            description: 'Descripción',
+            place: 'Lugar',
+            motivation: 'Motivación',
+            target: 'Dirigido a',
+            level: 'Nivel',
+            group: 'Grupo',
+            usersLimit: 'Número máximo de alumnos',
+            difficulty: 'Dificultad',
+            notes: 'Observaciones',
+            previousInfo: 'Información previa',
+            recommendationsBefore: 'Recomendaciones antes de la actividad',
+            recommendationsAfter: 'Recomendaciones después de la actividad',
+            duration: 'Duración (minutos)',
+            infoBeforeInit: 'Información para cuando la actividad está a punto de comenzar',
+            infoBeforeFinish: 'Información para cuando la actividad está a punto de terminar'
+
+        }
+
+
+
         for (var i in activityData) {
-
-            var field = activityData[i];
-
-            var fieldName = i;
-            var fieldValue = field;
-
-            if (fieldName === '__activityId') {
+            
+            if (!fieldsTitle[i]) {
                 continue;
             }
+            
+            var field = activityData[i];
 
-            var text = '' + fieldName.toUpperCase() + ': ' + fieldValue;
-            var label = app.ui.createLabel({text: text, class: fieldName});
+            var fieldTitle = fieldsTitle[i];
+            var fieldValue = field;
+
+            
+
+            var text = '' + fieldTitle + ': ' + fieldValue;
+            var label = app.ui.createLabel({text: text, class: i});
             activityContainer.append(label);
 
         }
 
         var buttonsContainer = $('<div class="buttonsContainer"></div>');
-        
+
         // BACK
         var btnBack = app.ui.createButton({
             text: 'Volver',
             click: function() {
 
                 app.activities.showActivitiesList();
-                
+
             }
         });
         buttonsContainer.append(btnBack);
@@ -157,21 +180,19 @@ app.activities = {
             });
             buttonsContainer.append(btnShowMap);
         }
-        
+
         // SHOW TASKS LIST
         // BACK
         var btnShowTasks = app.ui.createButton({
             text: 'Ver Tareas',
             click: function() {
-con("en ver tareas de id " + activityId)
+
                 app.tasks.showTasksList(activityId);
-                
+
             }
         });
-        
+
         buttonsContainer.append(btnShowTasks);
-
-
 
         activityContainer.append(buttonsContainer);
     }

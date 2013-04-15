@@ -2,21 +2,16 @@ app.tasks = {
     showTasksList: function(activityId) {
 
         var tasksListElement = $('#tasksList');
+        tasksListElement.html('');
 
         var aTasksListData = app.activities.activitiesData[activityId].tasks;
 
-        con("tasksList es ", aTasksListData);
-
         for (var i = 0, l = aTasksListData.length; i < l; i++) {
-
             var taskView = this.createTaskView(aTasksListData[i]);
-
-            tasksListElement.append(taskView)
-
+            tasksListElement.append(taskView);
         }
 
-        app.navigation.goto('tasksList')
-
+        app.navigation.goto('tasksList');
 
     },
     createTaskView: function(data) {
@@ -29,15 +24,18 @@ app.tasks = {
 
         container.append(name);
 
-
+        var buttonsContainer = app.ui.createButtonContainer({back: true, backClick: function(){
+                app.navigation.goto('activity');
+        }});
         var btnDo = app.ui.createButton({
             text: 'Hacer',
             click: function() {
                 app.tasks.showTask(data);
             }
         });
-        container.append(btnDo);
+        buttonsContainer.append(btnDo);
 
+        container.append(buttonsContainer);
 
         return container;
     },
@@ -74,31 +72,38 @@ app.tasks = {
             class: 'myLocation'
         });
         container.append(myLocation);
-        
+
         var distanceToTarget = app.ui.createLabel({
             class: 'distanceToTarget'
         });
         container.append(distanceToTarget);
-
-
-
-
         app.geolocation.getCurrentLocation({
             success: function(position) {
-                
-
                 var lat = position.coords.latitude, lon = position.coords.longitude;
                 myLocation.text('Tu posición es: Latitud ' + lat + ', Longitud ' + lon);
-                
-                
+
                 var distance = distanceFrom2Points(data.latitude, data.longitude, lat, lon);
                 distanceToTarget.text('Estás a ' + distance + ' metros de la tarea');
-
             }
-        });
+        })
+
+//        window.setInterval(function() {
+//            app.geolocation.getCurrentLocation({
+//                success: function(position) {
+//                    var lat = position.coords.latitude, lon = position.coords.longitude;
+//                    myLocation.text('Tu posición es: Latitud ' + lat + ', Longitud ' + lon);
+//
+//
+//                    var distance = distanceFrom2Points(data.latitude, data.longitude, lat, lon);
+//                    distanceToTarget.text('Estás a ' + distance + ' metros de la tarea');
+//                }
+//            });
+//        }, 5000)
 
 
-        container.append(app.ui.createButtonContainer({back:true}));
+
+
+        container.append(app.ui.createButtonContainer({back: true}));
 
         app.navigation.goto('task');
 

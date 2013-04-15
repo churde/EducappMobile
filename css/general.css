@@ -1,9 +1,20 @@
 #map_canvas{
     position: absolute;
-    height: 600px;
-    width: 800px;
+    height: 100%;
+    width: 85%;
 }
 
 .hidden{
     display: none;
+}
+
+#mapPage #backButton{
+    float: right;
+    margin-right: 10px;
+    margin-top: 10px;
+    
+}
+
+.buttonsContainer button{
+    margin-left: 10px;
 }
