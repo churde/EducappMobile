@@ -4,19 +4,22 @@ app.activities = {
     init: function() {
         this.activitiesListElement = $('#activitiesList');
     },
+    processActivitiesData: function(activitiesData) {
+        // Proccess data
+        for (var i = 0, l = activitiesData.length; i < l; i++) {
+            var activity = activitiesData[i];
+            app.activities.activitiesData[String(activity.__activityId)] = activity;
+
+        }
+    },
     showActivitiesList: function() {
         app.navigation.goto('activitiesList');
-        this.load();
+        this.update();
     },
     update: function() {
         var success = function(activitiesData) {
 
-            // Proccess data
-            for (var i = 0, l = activitiesData.length; i < l; i++) {
-                var activity = activitiesData[i];
-                app.activities.activitiesData[String(activity.__activityId)] = activity;
-
-            }
+            app.activities.processActivitiesData(activitiesData);
 
             app.activities.fillActivitiesList();
 
@@ -39,15 +42,8 @@ app.activities = {
         else {
             var success = function(activitiesData) {
 
+                app.activities.processActivitiesData(activitiesData);
 
-                // Proccess data
-                for (var i = 0, l = activitiesData.length; i < l; i++) {
-                    var activity = activitiesData[i];
-                    app.activities.activitiesData[activity.__activityId] = activity;
-                    con("despues de procesar ", app.activities.activitiesData)
-                }
-
-//                app.activities.activitiesData = activitiesData;
                 app.activities.fillActivitiesList();
 
                 // Saves the firstElement
@@ -134,17 +130,17 @@ app.activities = {
 
 
         for (var i in activityData) {
-            
+
             if (!fieldsTitle[i]) {
                 continue;
             }
-            
+
             var field = activityData[i];
 
             var fieldTitle = fieldsTitle[i];
             var fieldValue = field;
 
-            
+
 
             var text = '' + fieldTitle + ': ' + fieldValue;
             var label = app.ui.createLabel({text: text, class: i});
