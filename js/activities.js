@@ -168,7 +168,7 @@ app.activities = {
         // SHOW MAP
         if (activityData.latitude != "" && activityData.longitude != "") {
             var btnShowMap = app.ui.createButton({
-                text: 'Ver Mapa',
+                text: 'Mapa',
                 click: function() {
                     app.map.show({latitude: activityData.latitude, longitude: activityData.longitude});
                 }
