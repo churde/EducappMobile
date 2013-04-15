@@ -6,22 +6,17 @@ app.activities = {
     },
     showActivitiesList: function() {
         app.navigation.goto('activitiesList');
-        this.update();
+        this.load();
     },
     update: function() {
         var success = function(activitiesData) {
-//            con("activiesData ", activitiesData);
 
             // Proccess data
             for (var i = 0, l = activitiesData.length; i < l; i++) {
                 var activity = activitiesData[i];
-//                con("activity es ", activity, "activitiesData es ", app.activities.activitiesData,
-//            "y id es " + String(activity.__activityId))
                 app.activities.activitiesData[String(activity.__activityId)] = activity;
 
             }
-            con("despues de procesar ", app.activities.activitiesData)
-//                app.activities.activitiesData = activitiesData;
 
             app.activities.fillActivitiesList();
 
