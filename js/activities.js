@@ -19,6 +19,8 @@ app.activities = {
     update: function() {
         var success = function(activitiesData) {
 
+con("obtengo activitiesData ", activitiesData)
+
             app.activities.processActivitiesData(activitiesData);
 
             app.activities.fillActivitiesList();
@@ -77,16 +79,9 @@ app.activities = {
             container.append(place);
 
             var buttonsContainer = $('<div class="buttonsContainer"></div>');
-//            var btnShow = app.ui.createButton({
-//                text: 'Mostrar',
-//                click: function(){
-//                    app.activities.showActivity(activity.__activityId)
-//                }
-//            })
 
             var btnShow = $('<button class="btnShow btn-primary btn-large" onclick="app.activities.showActivity(' + activity.__activityId + ')"></button>');
             btnShow.text('Mostrar');
-
 
             buttonsContainer.append(btnShow);
             container.append(buttonsContainer);
