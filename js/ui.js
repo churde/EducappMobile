@@ -54,7 +54,7 @@ app.ui = {
         var label = app.ui.createLabel({
             text: _args.title
         });
-        var input = $('<input type="text"></input>');
+        var input = $('<input type="text" class="' + _args.class + '" name="' + _args.name + '"></input>');
         input.html(value);
 
         container.append(label);

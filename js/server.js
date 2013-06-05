@@ -17,6 +17,26 @@ app.server = {
         });
 
     },
+    
+    sendTaskQuestions: function(_args){
+        con("server sendTaskQ tengo questions ", _args.questions)
+        $.ajax({
+            type: 'GET',
+            url: this.path + 'add-answers',
+            data: {
+                userId: 0,
+                questions: _args.questions
+            },
+//            jsonp: 'callback',
+// 'jsonp' type for CROSS DOMAIN !!! 
+            dataType: 'jsonp',
+            success: _args.success,
+            error: function(data) {
+                con("error: ", data)
+            }
+        });
+        
+    }
 //    ajax: function(_args) {
 //        $.ajax({
 //            type: _args.type || 'GET',

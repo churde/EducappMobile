@@ -71,10 +71,10 @@ app.tasks = {
 //        container.append(duration);
 
 
-        var myLocation = app.ui.createLabel({
-            class: 'myLocation'
-        });
-        container.append(myLocation);
+//        var myLocation = app.ui.createLabel({
+//            class: 'myLocation'
+//        });
+//        container.append(myLocation);
 
         var distanceToTarget = app.ui.createLabel({
             class: 'distanceToTarget'
@@ -85,33 +85,35 @@ app.tasks = {
             class: 'distanceInfo'
         });
         container.append(distanceInfo);
-        con("fuera de success tengo data ", data)
+
+        function locationSuccess(position) {
+            var lat = position.coords.latitude, lon = position.coords.longitude;
+//            myLocation.text('Tu posición es: Latitud ' + lat + ', Longitud ' + lon);
+
+            var distance = distanceFrom2Points(data.latitude, data.longitude, lat, lon);
+            distanceToTarget.text('Estás a ' + distance + ' metros de la tarea');
+            var info = calculateTextProximity({
+                text: {
+                    geoTargetProximityText1: data.geoProximityText1,
+                    geoTargetProximityText2: data.geoProximityText2,
+                    geoTargetProximityText3: data.geoProximityText3
+                },
+                currentDistance: distance
+            });
+
+            distanceInfo.text(info.text);
+
+            $(".inputContainer input").prop("disabled", !info.isInTarget)
+
+        }
+
         app.geolocation.watchPosition({
             options: {
 //                timeout: 10000,
                 enableHighAccuracy: true
             },
             success: function(position) {
-                var lat = position.coords.latitude, lon = position.coords.longitude;
-                myLocation.text('Tu posición es: Latitud ' + lat + ', Longitud ' + lon);
-
-                var distance = distanceFrom2Points(data.latitude, data.longitude, lat, lon);
-                distanceToTarget.text('Estás a ' + distance + ' metros de la tarea');
-                var info = calculateTextProximity({
-                    text: {
-                        geoTargetProximityText1: data.geoProximityText1,
-                        geoTargetProximityText2: data.geoProximityText2,
-                        geoTargetProximityText3: data.geoProximityText3
-                    },
-                    currentDistance: distance
-                });
-
-                distanceInfo.text(info.text);
-
-                $(".inputContainer input").prop("disabled", !info.isInTarget)
-
-
-                con("distance info ", info)
+                locationSuccess(position);
             },
             error: function(e) {
                 con("error en watchPosition", e)
@@ -121,11 +123,7 @@ app.tasks = {
 
 //        app.geolocation.getCurrentLocation({
 //            success: function(position) {
-//                var lat = position.coords.latitude, lon = position.coords.longitude;
-//                myLocation.text('Tu posición es: Latitud ' + lat + ', Longitud ' + lon);
-//
-//                var distance = distanceFrom2Points(data.latitude, data.longitude, lat, lon);
-//                distanceToTarget.text('Estás a ' + distance + ' metros de la tarea');
+//                locationSuccess(position);
 //            }
 //        })
 
@@ -145,18 +143,49 @@ app.tasks = {
 
 
         var questionOpenGeo = data.questionOpenGeo;
-        con("questionsGeo es ", questionOpenGeo);
+
 
         for (var i in questionOpenGeo) {
             var question = questionOpenGeo[i];
             var input = app.ui.createInput({
-                title: question.title
+                title: question.title,
+                name: question.__questionOpenId,
+                class: 'taskQuestion'
             });
             container.append(input);
         }
 
+        var btnContainer = app.ui.createButtonContainer({back: true});
+        container.append(btnContainer);
 
-        container.append(app.ui.createButtonContainer({back: true}));
+        var btnSubmit = app.ui.createButton({
+            text: "Enviar",
+            click: function() {
+
+                var taskQuestions = $(".taskQuestion");
+
+                var data = [];
+                for (var i = 0, l = taskQuestions.length; i < l; i++) {
+                    var task = $(taskQuestions[i]);
+
+                    var aTaskData = new Array();
+                    aTaskData['questionId'] = task.attr("name");
+                    aTaskData['value'] = task.val();
+
+                    con("task data a enviar es ", aTaskData);
+                    data.push(aTaskData);
+                }
+                con("datos a enviar: ", data);
+
+                app.server.sendTaskQuestions({
+                    questions: data,
+                    success: function(data) {
+                        con("en sendTaskQuestions recibo data ", data)
+                    }
+                });
+            }
+        });
+//        btnContainer.append(btnSubmit);
 
         app.navigation.goto('task');
 
@@ -165,32 +194,6 @@ app.tasks = {
     }
 }
 
-/** Converts numeric degrees to radians */
-if (typeof(Number.prototype.toRad) === "undefined") {
-    Number.prototype.toRad = function() {
-        return this * Math.PI / 180;
-    }
-}
-if (typeof(String.prototype.toRad) === "undefined") {
-    String.prototype.toRad = function() {
-        return this * Math.PI / 180;
-    }
-}
-
-function distanceFrom2Points(lat1, lon1, lat2, lon2) {
-
-    var R = 6371; // Radius of the earth in km
-    var dLat = (lat2 - lat1).toRad();  // Javascript functions in radians
-    var dLon = (lon2 - lon1).toRad();
-    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c; // Distance in km
-
-    return Math.floor(d * 1000);
-
-}
 
 function calculateTextProximity(_args) {
 
@@ -220,7 +223,36 @@ function calculateTextProximity(_args) {
     else {
         text = notInProximityText;
     }
-    con("en calculate prox tengo text " + text, "cuando tengo params ", _args)
+
+//    isInTarget = true;
+//    con("en calculate prox tengo text " + text, "cuando tengo params ", _args)
     return {text: text, isInTarget: isInTarget};
+
+}
+
+/** Converts numeric degrees to radians */
+if (typeof(Number.prototype.toRad) === "undefined") {
+    Number.prototype.toRad = function() {
+        return this * Math.PI / 180;
+    }
+}
+if (typeof(String.prototype.toRad) === "undefined") {
+    String.prototype.toRad = function() {
+        return this * Math.PI / 180;
+    }
+}
+
+function distanceFrom2Points(lat1, lon1, lat2, lon2) {
+
+    var R = 6371; // Radius of the earth in km
+    var dLat = (lat2 - lat1).toRad();  // Javascript functions in radians
+    var dLon = (lon2 - lon1).toRad();
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c; // Distance in km
+
+    return Math.floor(d * 1000);
 
 }
