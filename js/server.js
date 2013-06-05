@@ -1,7 +1,7 @@
 
 
 app.server = {
-    path: 'http://www.appio.es/xurde/Zend/projects/educapp/dev/public/api/',
+    path: 'http://www.appio.es/xurde/Zend/projects/educapp/pre/public/api/',
     getActivities: function(_args) {
 
         $.ajax({

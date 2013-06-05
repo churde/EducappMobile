@@ -20,3 +20,11 @@
 .buttonsContainer button{
     margin-left: 5px;
 }
+
+
+/*TASKS*/
+
+.inputContainer{
+    margin-top: 30px;
+    border: 1px solid #BBBBBB;
+}

@@ -47,13 +47,13 @@ app.tasks = {
         container.html('');
 
         var name = app.ui.createLabel({
-            text: data.name,
+            text: data.geoName,
             class: 'name'
         });
         container.append(name);
 
         var description = app.ui.createLabel({
-            text: 'Descripción: ' + data.description,
+            text: 'Descripción: ' + data.geoDescription,
             class: 'description'
         });
         container.append(description);
